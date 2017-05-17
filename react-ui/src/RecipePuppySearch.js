@@ -94,12 +94,25 @@ class RecipePuppySearch extends React.Component {
     }
   }
 
+  handleRecipeClick(recipe) {
+    $.ajax({
+      method: 'POST',
+      url: '/api/recipe',
+      data: {
+        title: recipe.title,
+        href: recipe.href
+      }
+    })
+    .done((data) => {
+      console.log('post complete');
+    });
+  }
 
   render() {
     console.log('render state', this.state);
 
     const items = this.state.recipes.map((recipe, i) => {
-      return <li key={i + recipe.title}>
+      return <li key={i + recipe.title} onClick={() => this.handleRecipeClick(recipe)}>
         <img src={recipe.thumbnail} alt={recipe.title} />
         {recipe.title}
       </li>
