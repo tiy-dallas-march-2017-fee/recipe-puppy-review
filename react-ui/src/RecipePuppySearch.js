@@ -1,5 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
+import './RecipePuppySearch.css';
 
 class RecipePuppySearch extends React.Component {
 
@@ -7,7 +8,8 @@ class RecipePuppySearch extends React.Component {
     super();
     this.state = {
       queryInputValue: '',
-      liveQueryValue: ''
+      liveQueryValue: '',
+      recipes: []
     }
   }
 
@@ -20,7 +22,23 @@ class RecipePuppySearch extends React.Component {
       url: url
     })
     .done((data) => {
-      console.log('data!', data);
+
+      const fixedData = data.results.map((recipe) => {
+
+        let thumbnail = recipe.thumbnail !== '' ? recipe.thumbnail : 'no-image-available.png';
+
+        return {
+          href: recipe.href,
+          ingredients: recipe.ingredents,
+          thumbnail: thumbnail,
+          title: recipe.title
+        };
+      });
+
+
+      this.setState({
+        recipes: fixedData
+      })
     });
   }
 
@@ -53,8 +71,17 @@ class RecipePuppySearch extends React.Component {
 
   render() {
     console.log('render state', this.state);
+
+    const items = this.state.recipes.map((recipe, i) => {
+      return <li key={i + recipe.title}>
+        <img src={recipe.thumbnail} alt={recipe.title} />
+        {recipe.title}
+      </li>
+    });
+
+
     return (
-      <div>
+      <div className="recipe-puppy-search">
         <input
           onChange={(evt) => this.handleChange(evt)}
           onKeyUp={(evt) => this.handleKeyUp(evt)}
@@ -62,6 +89,10 @@ class RecipePuppySearch extends React.Component {
           />
 
         <button onClick={() => this.handleSearchClick()}>search</button>
+
+        <ol>
+          {items}
+        </ol>
 
       </div>
     );
