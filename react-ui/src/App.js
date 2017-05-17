@@ -1,8 +1,19 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import $ from 'jquery';
 
 class App extends Component {
+
+  componentDidMount() {
+    $.ajax({
+      url: '/api'
+    })
+    .done((data) => {
+      console.log('response?', data);
+    });
+  }
+
   render() {
     return (
       <div className="App">
