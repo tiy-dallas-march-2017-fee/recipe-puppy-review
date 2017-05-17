@@ -12,8 +12,13 @@ app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 
 app.get('/api/recipes', function(req, res) {
 
+  //query string parameters are put in an object called "query" and you can pull them out like so:
+  const url = `http://www.recipepuppy.com/api/?q=${req.query.foodQuery}&i=sour%20cream`
+
+  //console.log(req.query, 'url', url);
+
   //using the request library to fetch our data to avoid CORS issues
-  request('http://www.recipepuppy.com/api/?q=steak&i=sour%20cream', function(err, resp, body) {
+  request(url, function(err, resp, body) {
 
     //This data comes back as a string, so we're turning back into an object.
     body = JSON.parse(body);

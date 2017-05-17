@@ -11,9 +11,13 @@ class RecipePuppySearch extends React.Component {
     }
   }
 
-  componentDidMount() {
+  queryForRecipes() {
+    const url = `/api/recipes?foodQuery=${this.state.liveQueryValue}`;
+
+    console.log('what url?', url);
+
     $.ajax({
-      url: '/api/recipes'
+      url: url
     })
     .done((data) => {
       console.log('data!', data);
@@ -31,8 +35,20 @@ class RecipePuppySearch extends React.Component {
       this.setState({
         liveQueryValue: evt.target.value,
         queryInputValue: ''
+      }, () => {
+        this.queryForRecipes();
       });
+
     }
+  }
+
+  handleSearchClick() {
+    this.setState({
+      liveQueryValue: this.state.queryInputValue,
+      queryInputValue: ''
+    }, () => {
+      this.queryForRecipes();
+    });
   }
 
   render() {
@@ -45,7 +61,8 @@ class RecipePuppySearch extends React.Component {
           value={this.state.queryInputValue}
           />
 
-        RecipePuppySearch
+        <button onClick={() => this.handleSearchClick()}>search</button>
+
       </div>
     );
   }
