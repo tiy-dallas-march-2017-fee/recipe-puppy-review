@@ -9,14 +9,16 @@ class RecipePuppySearch extends React.Component {
     this.state = {
       queryInputValue: '',
       liveQueryValue: '',
-      recipes: []
+      recipes: [],
+      filterInputValue: '',
+      filters: []
     }
   }
 
   queryForRecipes() {
-    const url = `/api/recipes?foodQuery=${this.state.liveQueryValue}`;
+    const url = `/api/recipes?foodQuery=${this.state.liveQueryValue}&ingredientQuery=${this.state.filters.join()}`;
 
-    console.log('what url?', url);
+    //console.log('what url?', url);
 
     $.ajax({
       url: url
@@ -25,6 +27,7 @@ class RecipePuppySearch extends React.Component {
 
       const fixedData = data.results.map((recipe) => {
 
+        //Fixing the thumbnail
         let thumbnail = recipe.thumbnail !== '' ? recipe.thumbnail : 'no-image-available.png';
 
         return {
@@ -69,6 +72,29 @@ class RecipePuppySearch extends React.Component {
     });
   }
 
+
+  handleFilterInputChange(evt) {
+    this.setState({
+      filterInputValue: evt.target.value
+    });
+  }
+
+  handleFilterOnKeyUp(evt) {
+    if (evt.keyCode === 13) {
+
+      const filterArray = this.state.filters.slice();
+      filterArray.push(this.state.filterInputValue);
+
+      this.setState({
+        filterInputValue: '',
+        filters: filterArray
+      }, () => {
+        this.queryForRecipes();
+      });
+    }
+  }
+
+
   render() {
     console.log('render state', this.state);
 
@@ -78,6 +104,26 @@ class RecipePuppySearch extends React.Component {
         {recipe.title}
       </li>
     });
+
+    let filter;
+    if (this.state.recipes.length > 0) {
+
+      const filters = this.state.filters.map((filter, i) => {
+        return <li key={i + filter}>{filter}</li>
+      });
+
+      filter = <div>
+        <input
+          onChange={(evt) => this.handleFilterInputChange(evt)}
+          onKeyUp={(evt) => this.handleFilterOnKeyUp(evt)}
+          value={this.state.filterInputValue}
+          />
+
+        <ol>
+          {filters}
+        </ol>
+      </div>
+    }
 
 
     return (
@@ -89,6 +135,8 @@ class RecipePuppySearch extends React.Component {
           />
 
         <button onClick={() => this.handleSearchClick()}>search</button>
+
+        {filter}
 
         <ol>
           {items}

@@ -13,7 +13,7 @@ app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 app.get('/api/recipes', function(req, res) {
 
   //query string parameters are put in an object called "query" and you can pull them out like so:
-  const url = `http://www.recipepuppy.com/api/?q=${req.query.foodQuery}&i=sour%20cream`
+  const url = `http://www.recipepuppy.com/api/?q=${req.query.foodQuery}&i=${req.query.ingredientQuery}`
 
   //console.log(req.query, 'url', url);
 
